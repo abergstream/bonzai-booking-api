@@ -34,7 +34,7 @@ functions:
           path: /overview
           method: get
   availableRooms:
-    handler: functions/bookRoom/index.handler
+    handler: functions/getAvailableRooms/index.handler
     events:
       - httpApi:
           path: /rooms
@@ -52,7 +52,7 @@ functions:
           path: /room
           method: delete
   updateBooking:
-    handler: functions/bookRoom/index.handler
+    handler: functions/updateBooking/index.handler
     events:
       - httpApi:
           path: /room

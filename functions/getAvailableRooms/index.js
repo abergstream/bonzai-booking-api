@@ -1,8 +1,10 @@
+import { db } from "../../services/db.js";
+import { sendResponse, sendError } from "../../services/responses.js";
 export const handler = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: "Go Serverless v4! Your function executed successfully!",
-    }),
-  };
+  try {
+    const { Items } = await db.scan({ TableName: "bonzai_rooms" });
+    return sendResponse(Items);
+  } catch (error) {
+    return sendError(500, error);
+  }
 };

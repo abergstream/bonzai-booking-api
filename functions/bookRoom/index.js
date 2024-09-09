@@ -1,3 +1,6 @@
+import { nanoid } from "nanoid";
+const bookingID = nanoid();
+
 export const handler = async (event) => {
   return {
     statusCode: 200,
