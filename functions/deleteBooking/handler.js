@@ -1,4 +1,4 @@
-export async function test(event) {
+export async function deleteBooking(event) {
   return {
     statusCode: 200,
     body: JSON.stringify({

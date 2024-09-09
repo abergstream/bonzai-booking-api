@@ -27,18 +27,36 @@ package:
   individually: true
 
 functions:
-  test:
-    handler: handler.hello
+  overview:
+    handler: functions/bookingOverview/handler.getOverview
     events:
       - httpApi:
-          path: /
+          path: /overview
           method: get
-  newTest:
-    handler: functions/bookingOverview/handler.test
+  availableRooms:
+    handler: functions/bookRoom/handler.availableRooms
     events:
       - httpApi:
-          path: /hej
+          path: /rooms
           method: get
+  bookRoom:
+    handler: functions/bookRoom/handler.bookRoom
+    events:
+      - httpApi:
+          path: /room
+          method: post
+  deleteRoom:
+    handler: functions/deleteBooking/handler.deleteBooking
+    events:
+      - httpApi:
+          path: /room
+          method: delete
+  updateBooking:
+    handler: functions/bookRoom/handler.updateBooking
+    events:
+      - httpApi:
+          path: /room
+          method: put
 
 resources:
   Resources:
