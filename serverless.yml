@@ -19,40 +19,40 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: "*"
-build:
-  esbuild:
-    minify: true
-
-package:
-  individually: true
 
 functions:
+  test:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
   overview:
-    handler: functions/bookingOverview/handler.getOverview
+    handler: functions/bookingOverview/index.handler
     events:
       - httpApi:
           path: /overview
           method: get
   availableRooms:
-    handler: functions/bookRoom/handler.availableRooms
+    handler: functions/bookRoom/index.handler
     events:
       - httpApi:
           path: /rooms
           method: get
   bookRoom:
-    handler: functions/bookRoom/handler.bookRoom
+    handler: functions/bookRoom/index.handler
     events:
       - httpApi:
           path: /room
           method: post
   deleteRoom:
-    handler: functions/deleteBooking/handler.deleteBooking
+    handler: functions/deleteBooking/index.handler
     events:
       - httpApi:
           path: /room
           method: delete
   updateBooking:
-    handler: functions/bookRoom/handler.updateBooking
+    handler: functions/bookRoom/index.handler
     events:
       - httpApi:
           path: /room
