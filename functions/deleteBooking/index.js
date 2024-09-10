@@ -2,15 +2,13 @@ import { db } from "../../services/db.js";
 import { sendResponse, sendError } from "../../services/responses.js";
 
 export const handler = async (event) => {
-  // Get todays date in YYYY-mm-dd format
-
-  const { bookingNumber } = JSON.parse(event.body);
+  const { bookingNumber: bookingID } = JSON.parse(event.body);
 
   try {
     const params = {
       TableName: "bonzai_bookings",
       Key: {
-        id: bookingNumber,
+        id: bookingID,
       },
     };
 
@@ -23,7 +21,10 @@ export const handler = async (event) => {
         `No booking found with reference number: ${bookingNumber}`
       );
     }
+    // Get todays date in YYYY-mm-dd format
     const date_today = new Date().toISOString().split("T")[0];
+
+    // Get check-in date from database
     const date_in = Item.date_in;
 
     // Convert dates to Date objects
