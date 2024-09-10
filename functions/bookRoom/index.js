@@ -39,3 +39,26 @@ export const handler = async (event) => {
     return sendError(500, error);
   }
 };
+// Påbörjad funktion för att se hur många lediga rum det finns
+async function test() {
+  const dateInValue = "2024-09-13";
+  const dateOutValue = "2024-09-15";
+
+  const params = {
+    TableName: "bonzai_bookings",
+    FilterExpression:
+      "(#date_in <= :dateOutValue AND #date_out > :dateInValue) AND NOT (#date_in = :dateOutValue AND #date_out = :dateInValue)",
+    ExpressionAttributeNames: {
+      "#date_in": "date_in",
+      "#date_out": "date_out",
+    },
+    ExpressionAttributeValues: {
+      ":dateInValue": dateInValue,
+      ":dateOutValue": dateOutValue,
+    },
+  };
+
+  const { Count } = await db.scan(params);
+  console.log(Count);
+}
+test();
