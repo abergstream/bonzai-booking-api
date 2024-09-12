@@ -2,13 +2,13 @@ import { db } from "../../services/db.js";
 import { sendResponse, sendError } from "../../services/responses.js";
 
 export const handler = async (event) => {
-  const { bookingNumber: bookingID } = JSON.parse(event.body);
+  const { id } = event.pathParameters;
 
   try {
     const params = {
       TableName: "bonzai_bookings",
       Key: {
-        id: bookingID,
+        id: id,
       },
     };
 
