@@ -1,6 +1,6 @@
-export const sendResponse = (statusCode, data) => {
+export const sendResponse = (data) => {
   return {
-    statusCode: statusCode,
+    statusCode: 200,
     headers: {
       "Content-Type": "application/json",
     },
