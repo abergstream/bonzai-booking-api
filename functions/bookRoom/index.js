@@ -26,12 +26,16 @@ export const handler = async (event) => {
       return sendError(400, validationErrors);
     }
 
+    const availableRooms = await getAvailableRooms();
+    if (availableRooms < roomType.length) {
+      return sendError(400, "Not enough rooms available");
+    }
     // If no errors, get params to post to table
     const insertParams = getParams(event, rooms, roomType);
 
     try {
-      const data = await db.put(insertParams);
-      return sendResponse({ message: data });
+      await db.put(insertParams);
+      return sendResponse({ message: getResponse(insertParams) });
     } catch (error) {
       return sendError(500, error);
     }
@@ -39,26 +43,43 @@ export const handler = async (event) => {
     return sendError(500, error);
   }
 };
-// Påbörjad funktion för att se hur många lediga rum det finns
-async function test() {
-  const dateInValue = "2024-09-13";
-  const dateOutValue = "2024-09-15";
 
-  const params = {
+export const getAvailableRooms = async () => {
+  const date_today = new Date().toISOString().split("T")[0];
+  const availableRoomsParams = {
     TableName: "bonzai_bookings",
-    FilterExpression:
-      "(#date_in <= :dateOutValue AND #date_out > :dateInValue) AND NOT (#date_in = :dateOutValue AND #date_out = :dateInValue)",
-    ExpressionAttributeNames: {
-      "#date_in": "date_in",
-      "#date_out": "date_out",
-    },
+    FilterExpression: "date_in >= :today",
     ExpressionAttributeValues: {
-      ":dateInValue": dateInValue,
-      ":dateOutValue": dateOutValue,
+      ":today": date_today,
     },
   };
-
-  const { Count } = await db.scan(params);
-  console.log(Count);
-}
-test();
+  const { Items } = await db.scan(availableRoomsParams);
+  let roomsBooked = 0;
+  Items.forEach((item) => {
+    roomsBooked += item.room_type.length;
+  });
+  return 20 - roomsBooked;
+};
+const getResponse = (params) => {
+  const {
+    name,
+    email,
+    id,
+    date_in,
+    date_out,
+    number_of_guests,
+    room_type,
+    price,
+  } = params.Item;
+  const response = {
+    bookingNumber: id,
+    name: name,
+    email: email,
+    number_of_guests: number_of_guests,
+    rooms: room_type,
+    price: price,
+    checkin_date: date_in,
+    checkout_date: date_out,
+  };
+  return response;
+};
