@@ -55,7 +55,7 @@ functions:
     handler: functions/updateBooking/index.handler
     events:
       - httpApi:
-          path: /room
+          path: /room/{id}
           method: put
 
 resources:
