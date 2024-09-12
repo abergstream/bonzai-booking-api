@@ -1,28 +1,28 @@
-import { db } from "../../services/db.js";
-import { sendResponse, sendError } from "../../services/responses.js";
+import { db } from "../../services/db.js"; // Importerar DynamoDB-klienten
+import { sendResponse, sendError } from "../../services/responses.js"; // Importerar svarshantering
 
+// Hämtar tillgängliga rum från bokningstabellen
 export const getAvailableRooms = async () => {
-  const date_today = new Date().toISOString().split("T")[0];
+  const date_today = new Date().toISOString().split("T")[0]; // Hämta dagens datum
+
   const availableRoomsParams = {
-    TableName: "bonzai_bookings",
-    FilterExpression: "date_in >= :today",
+    TableName: "bonzai_bookings", // Tabell med bokningar
+    FilterExpression: "date_in >= :today", // Endast bokningar från och med idag
     ExpressionAttributeValues: {
       ":today": date_today,
     },
   };
 
   try {
-    const { Items } = await db.scan(availableRoomsParams);
-    let roomsBooked = 0;
+    const { Items } = await db.scan(availableRoomsParams); // Skanna bokningar från dagens datum
 
-    // Räknar bokade rum baserat på rumstyper
+    let roomsBooked = 0;
     Items.forEach((item) => {
-      roomsBooked += item.room_type.length;
+      roomsBooked += item.room_type.length; // Räkna bokade rum
     });
 
-    // Hotellet har totalt 20 rum
-    return 20 - roomsBooked;
+    return 20 - roomsBooked; // Returnera antalet lediga rum
   } catch (error) {
-    return sendError(500, error);
+    return sendError(500, error); // Returnera felmeddelande vid problem
   }
 };
