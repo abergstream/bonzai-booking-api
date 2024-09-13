@@ -3,6 +3,7 @@
 ### Endpoints
 
 Endpoints will be posted in the school platform
+
 {id} is the booking number
 
 ### Example params
