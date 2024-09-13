@@ -49,9 +49,8 @@ const getCurrentDateTime = () => {
   return format(now, "yyyy-MM-dd HH:mm:ss", { timeZone: "Europe/Stockholm" });
 };
 
-export const validateBooking = (event, roomType, rooms) => {
+export const validateBooking = (event, roomType, rooms, change) => {
   const errors = [];
-
   const { name, from: date_in, to: date_out, guests } = JSON.parse(event.body);
   // Get todays date in YYYY-mm-dd format
   const date_today = new Date().toISOString().split("T")[0];
@@ -68,8 +67,10 @@ export const validateBooking = (event, roomType, rooms) => {
     );
   }
   // Validate that name contains a firstname and a surname
-  if (!validateName(name)) {
-    errors.push("Name must contain a firstname and a surname");
+  if (!change) {
+    if (!validateName(name)) {
+      errors.push("Name must contain a firstname and a surname");
+    }
   }
   // Validate date format
   if (!validateDate(date_in, date_today)) {
