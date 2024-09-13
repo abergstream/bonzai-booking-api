@@ -51,7 +51,13 @@ const getCurrentDateTime = () => {
 
 export const validateBooking = (event, roomType, rooms, change) => {
   const errors = [];
-  const { name, from: date_in, to: date_out, guests } = JSON.parse(event.body);
+  const {
+    name,
+    email,
+    from: date_in,
+    to: date_out,
+    guests,
+  } = JSON.parse(event.body);
   // Get todays date in YYYY-mm-dd format
   const date_today = new Date().toISOString().split("T")[0];
 
@@ -70,6 +76,9 @@ export const validateBooking = (event, roomType, rooms, change) => {
   if (!change) {
     if (!validateName(name)) {
       errors.push("Name must contain a firstname and a surname");
+    }
+    if (!validateEmail(email)) {
+      errors.push("Invalid e-mail address");
     }
   }
   // Validate date format
@@ -142,6 +151,13 @@ const validateName = (name) => {
     return false;
   }
   return true;
+};
+const validateEmail = (email) => {
+  // Regular expression for validating an email
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  // Test the email against the regular expression
+  return re.test(String(email).toLowerCase());
 };
 const validateDate = (dateString, date_today) => {
   // Regex to match the date format YYYY-MM-DD
