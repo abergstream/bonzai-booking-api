@@ -30,7 +30,7 @@ export const getParams = (event, rooms, roomType) => {
   };
 };
 
-const calculatePrice = (items, roomType) => {
+export const calculatePrice = (items, roomType) => {
   const roomTypePriceMap = items.reduce((map, item) => {
     map[item.room_type] = item.price;
     return map;
@@ -82,9 +82,7 @@ export const validateBooking = (event, roomType, rooms, change) => {
       errors.push("Invalid e-mail address");
     }
   }
-  if (!validateEmail(email)) {
-    errors.push("Invalid e-mail address");
-  }
+
   // Validate date format
   if (!validateDate(date_in, date_today)) {
     errors.push("From date needs to be today or later, in YYYY-mm-dd format");
@@ -142,13 +140,7 @@ const validateRooms = (rooms, roomType) => {
   // Check if every requested room type is in the available room types
   return roomType.every((type) => availableRoomTypes.has(type));
 };
-const validateEmail = (email) => {
-  // Regular expression for validating an email address
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Test the email against the regex
-  return emailRegex.test(email);
-};
 const validateName = (name) => {
   // Check if the name contains a space and has at least two parts
   const nameParts = name.trim().split(/\s+/); // Split by one or more spaces
