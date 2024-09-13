@@ -4,26 +4,23 @@ import { validateBooking } from '../../services/bookingFunctions.js';
 
 export const handler = async (event, context) => {
     const { id } = event.pathParameters;
-    const { date_in, date_out, number_of_guests, room_type } = JSON.parse(event.body);
+    const { from, to, name, email, guests, room_type } = JSON.parse(event.body);
 
     try {
         // Hämta alla rum från databasen
-/*         const { Items: rooms } = await db.scan({ TableName: "bonzai_rooms" });
+        const { Items: rooms } = await db.scan({ TableName: "bonzai_rooms" });
 
         // Kolla om det finns några rum tillgängliga
         if (!rooms || rooms.length === 0) {
             console.log('No available rooms found');
             return sendError(404, { success: false, message: 'No available rooms found' });
         }
+            // Andreas kod
+        const roomType = Object.entries(room_type).flatMap(([key, value]) =>
+            Array(value).fill(key)
+        );
 
-        // Funkar ej i Insomnia. Problem med följande i bookingFunctions:
-        //   const nameParts = name.trim().split(/\s+/); (enligt CLOUDWATCH)
-        const validationErrors = validateBooking(event, room_type, rooms);
-        if (validationErrors.length > 0) {
-            console.log('Validation errors:', validationErrors);
-            return sendError(400, { success: false, message: 'Validation failed', errors: validationErrors });
-        } */
-
+    
         // Kolla om ID:t finns annars returnera 404
         const checkId = await db.get({
             TableName: 'bonzai_bookings',
@@ -35,6 +32,15 @@ export const handler = async (event, context) => {
             return sendError(404, { success: false, message: 'Booking not found, wrong booking number!' });
         }
 
+        
+
+
+     const validationErrors = validateBooking(event, roomType, rooms);
+        if (validationErrors.length > 0) {
+            console.log('Validation errors:', validationErrors);
+            return sendError(400, { success: false, message: 'Validation failed', errors: validationErrors });
+        }
+
         console.log('Updating booking with ID:', id);
 
         // Uppdatera bokningen i databasen och returnera den uppdaterade bokningen
@@ -44,10 +50,10 @@ export const handler = async (event, context) => {
             ReturnValues: 'ALL_NEW',
             UpdateExpression: 'set date_in = :date_in, date_out = :date_out, number_of_guests = :number_of_guests, room_type = :room_type',
             ExpressionAttributeValues: {
-                ':date_in': date_in,
-                ':date_out': date_out,
-                ':number_of_guests': number_of_guests,
-                ':room_type': room_type
+                ':date_in': from,
+                ':date_out': to,
+                ':number_of_guests': guests,
+                ':room_type': roomType
             }
         });
 

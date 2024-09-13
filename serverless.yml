@@ -49,7 +49,7 @@ functions:
     handler: functions/deleteBooking/index.handler
     events:
       - httpApi:
-          path: /room
+          path: /room/{id}
           method: delete
   updateBooking:
     handler: functions/updateBooking/index.handler
