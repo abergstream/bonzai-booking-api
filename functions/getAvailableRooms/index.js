@@ -22,8 +22,9 @@ export const handler = async () => {
     });
 
     const availableRooms = 20 - roomsBooked;
-    sendResponse({ availableRooms });
+    return sendResponse({ availableRooms });
   } catch (error) {
     return sendError(500, error); // Returnera felmeddelande vid problem
   }
 };
+handler();
