@@ -2,7 +2,7 @@ import { db } from "../../services/db.js"; // Importerar DynamoDB-klienten
 import { sendResponse, sendError } from "../../services/responses.js"; // Importerar svarshantering
 
 // Hämtar tillgängliga rum från bokningstabellen
-export const getAvailableRooms = async () => {
+export const handler = async () => {
   const date_today = new Date().toISOString().split("T")[0]; // Hämta dagens datum
 
   const availableRoomsParams = {
@@ -21,7 +21,8 @@ export const getAvailableRooms = async () => {
       roomsBooked += item.room_type.length; // Räkna bokade rum
     });
 
-    return 20 - roomsBooked; // Returnera antalet lediga rum
+    const availableRooms = 20 - roomsBooked;
+    sendResponse({ availableRooms });
   } catch (error) {
     return sendError(500, error); // Returnera felmeddelande vid problem
   }
