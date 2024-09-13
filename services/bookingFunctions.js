@@ -51,6 +51,7 @@ const getCurrentDateTime = () => {
 
 export const validateBooking = (event, roomType, rooms, change) => {
   const errors = [];
+
   const {
     name,
     email,
@@ -81,6 +82,9 @@ export const validateBooking = (event, roomType, rooms, change) => {
       errors.push("Invalid e-mail address");
     }
   }
+  if (!validateEmail(email)) {
+    errors.push("Invalid e-mail address");
+  }
   // Validate date format
   if (!validateDate(date_in, date_today)) {
     errors.push("From date needs to be today or later, in YYYY-mm-dd format");
@@ -96,7 +100,7 @@ export const validateBooking = (event, roomType, rooms, change) => {
 
   // Validate room capacity
   if (!validateCapacity(rooms, roomType, guests)) {
-    errors.push("Room capacity too low");
+    errors.push("Room capacity is too low");
   }
 
   // Validate room types
@@ -138,6 +142,13 @@ const validateRooms = (rooms, roomType) => {
   // Check if every requested room type is in the available room types
   return roomType.every((type) => availableRoomTypes.has(type));
 };
+const validateEmail = (email) => {
+  // Regular expression for validating an email address
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Test the email against the regex
+  return emailRegex.test(email);
+};
 const validateName = (name) => {
   // Check if the name contains a space and has at least two parts
   const nameParts = name.trim().split(/\s+/); // Split by one or more spaces
@@ -167,6 +178,8 @@ const validateDate = (dateString, date_today) => {
   if (!regex.test(dateString)) {
     return false;
   }
+
+  // Check if the date string is older than todays date
   if (dateString < date_today) {
     return false;
   }
